@@ -1,3 +1,3 @@
 # Security Bundle avec de l'aspirine
 
-Conférence présente lors du sfPot de Mars 2013 par Joël Wurtz
+Conférence présentée lors du [sfPot](http://afsy.fr/) de Mars 2013 par [Joël Wurtz](http://jolicode.com/equipe/joel-wurtz).
