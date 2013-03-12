@@ -46,19 +46,13 @@
 				</section>
 
 				<section class="center">
-					<img src="images/logo-jolicode.png" class="logo"/>
-					<br />
-					<img src="images/nyan-pony.gif" class="simple inline" />
+					<img src="images/jolicode.jpg" class="logo" />
 				</section>
 
 				<section class="center">
 					<h1>Security Bundle avec de l'aspirine</h1>
 					<div class="spacer"></div>
 					<h3>sfPot - Mars 2013</h3>
-                    <div class="spacer"></div>
-                    <p>
-                        <small>Cette conférence n'est pas une conférence sur <del>le cyclimse</del> l'autorisation.</small>
-                    </p>
 				</section>
 
                 <section>
@@ -67,7 +61,6 @@
                         <li class="fragment">Comment authentifier mon utilisateur : Authentification</li>
                         <li class="fragment">Les droits de mon utilisateur : Autorisation</li>
                     </ul>
-                    <p class="center fragment"><img class="simple" src="images/security_authentication_authorization.png" /></p>
                 </section>
                 
                 <section class="center">
@@ -351,11 +344,17 @@ class MyUserFactory implements UserProviderFactoryInterface
     public function addConfiguration(NodeDefinition $builder)
     {
         //Ici on définit l'architecture de notre configuration (comme un bundle)
+        $node
+            ->children()
+                ->scalarNode('my_parameter')->cannotBeEmpty()->end()
+            ->end()
+        ;
     }
     
     public function create(ContainerBuilder $container, $id, $config)
     {
         //Ici on créer notre service selon la configuration
+        $definition = $container->setDefinition($id, new DefinitionDecorator('my_bundle.security.user.provider.my_awesome_provider'));
     }
 }
 </code></pre>
