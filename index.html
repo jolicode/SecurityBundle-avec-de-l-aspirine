@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Security Bundle avec de l'aspirine</title>
+
+		<meta name="description" content="Security Bundle avec de l'aspirine">
+		<meta name="author" content="Joel Wurtz @Jolicode">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<link href="css/convergence.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h2 class="center">Coucou !</h2>
+					<div class="spacer"></div>
+                    <h3 class="center">Joel Wurtz</h3>
+                    <p class="center">Expert Web</p>
+                    <p class="center"><img src="images/twitter.png" class="simple inline" />@joelwurtz</p>
+				</section>
+
+				<section class="center">
+					<img src="images/logo-jolicode.png" class="logo"/>
+					<br />
+					<img src="images/nyan-pony.gif" class="simple inline" />
+				</section>
+
+				<section class="center">
+					<h1>Security Bundle avec de l'aspirine</h1>
+					<div class="spacer"></div>
+					<h3>sfPot - Mars 2013</h3>
+                    <div class="spacer"></div>
+                    <p>
+                        <small>Cette conférence n'est pas une conférence sur <del>le cyclimse</del> l'autorisation.</small>
+                    </p>
+				</section>
+
+                <section>
+                    <h1 class="center">Security Bundle</h1>
+                    <ul>
+                        <li class="fragment">Comment authentifier mon utilisateur : Authentification</li>
+                        <li class="fragment">Les droits de mon utilisateur : Autorisation</li>
+                    </ul>
+                    <p class="center fragment"><img class="simple" src="images/security_authentication_authorization.png" /></p>
+                </section>
+                
+                <section class="center">
+                    <h1 class="center">Authentification</h1>
+                    <ul>
+                        <li class="fragment">Dans quel domaine est valable mon utilisateur ?</li>
+                        <li class="fragment">Comment déclencher l'authentification ?</li>
+                        <li class="fragment">Ou récuperer les informations de mon utilisateur ?</li>
+                        <li class="fragment">Que faire lors de la connexion / déconnexion d'un utilisateur ?</li>
+                        <li class="fragment">Comment authentifier un utilisateur ?</li>
+                        <li class="fragment">Que faire on si mon utilisateur n'est pas valide ?</li>
+                        <li class="fragment">Utilisateur anonyme ? Enregistrement en session ? ...</li>
+                    </ul>
+                </section>
+                
+                <section class="center">
+                    <h2 class="center">Facile !</h2>
+                    <div class="spacer"></div>
+                    <img class="simple" src="images/authentication-symfony.png" />
+                </section>
+
+                <section class="center">
+                    <div class="spacer"></div>
+                    <img class="simple" src="images/loupe.jpg" />
+                </section>
+                
+                <section class="center">
+                    <h1 class="center">Firewall</h1>
+                    <div class="spacer"></div>
+                    <img class="simple" src="images/firewall.gif" />
+                </section>
+                
+                <section>
+                    <h2 class="center">Firewall</h2>
+                    <div class="spacer"></div>
+                    <img class="simple" src="images/firewall-event.png" />
+                </section>
+
+                <section class="center">
+                    <h1 class="center">FirewallMap</h1>
+                    <div class="spacer"></div>
+                    <p>Associe un domaine (RequestMatcher) à un système de sécurité (FirewallContext)</p>
+                    <div class="spacer"></div>
+                    <p>
+	                    <img class="simple" src="images/firewall.gif" />
+	                    <img class="simple" src="images/firewall.gif" />
+	                    <img class="simple" src="images/firewall.gif" />
+                    </p>
+                </section>
+                
+                <section>
+                    <h2 class="center">Firewall : RequestMatcher</h2>
+                    <p class="center">Regarde si la requète courante est valide</p>
+                    <pre ><code style="max-height: 700px" contenteditable># -*- mode: php -*-
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestMatcherInterface;
+
+class MyRequestMatcher implements RequestMatcherInterface
+{
+    public function matches(Request $request)
+    {
+        //Renvoie vrai si on doit lancer notre système de sécurite, faux dans le cas inverse
+        return ($request->getHost() == "admin.monapplication.com");
+    }
+}
+</code></pre>
+                </section>
+                                
+                <section>
+                    <h2 class="center">FirewallContext</h2>
+
+                    <img class="simple" src="images/firewall-context.png" />
+                </section>
+                
+                <section>
+                    <h2 class="center">Firewall : ExceptionListener</h2>
+                    <div class="spacer"></div>
+                    <p class="center">Comment déclencher l'authentification ?</p>
+                </section>
+                
+                <section>
+                    <h2 class="center">ExceptionListener</h2>
+                    
+                    <div class="spacer"></div>
+                    <p class="center">Executer lors d'une exception de type AuthenticationException</p>
+                    
+                    <pre><code style="max-height: 700px" contenteditable># -*- mode: php -*-
+throw new AuthenticationException();
+</code></pre>
+                </section>
+                                
+                
+                <section>
+                    <h2 class="center">ExceptionListener</h2>
+                    <div class="spacer"></div>
+                    <p class="center">ExceptionListener contient un EntryPoint</p>
+                    
+                    <pre><code style="max-height: 700px" contenteditable># -*- mode: php -*-
+namespace Symfony\Component\Security\Http\EntryPoint;
+
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\HttpFoundation\Request;
+
+interface AuthenticationEntryPointInterface
+{
+    public function start(Request $request, AuthenticationException $authException = null);
+}
+</code></pre>
+                </section>
+                <section>
+                    <h2 class="center">FirewallContext</h2>
+
+                    <img class="simple" src="images/firewall-context.png" />
+                </section>
+                
+                <section>
+                    <h2 class="center">Firewall : Listeners</h2>
+                    <p class="center"><img class="simple" src="images/listeners.jpg" /></p>
+                </section>
+                
+                <section>
+                    <h2 class="center">Firewall : Listeners</h2>
+                    <pre ><code style="max-height: 700px" contenteditable># -*- mode: php -*-
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+
+interface ListenerInterface
+{
+    public function handle(GetResponseEvent $event);
+}
+</code></pre>
+                </section>
+                
+                <section>
+                    <h2 class="center">Listener</h2>
+                    <p class="center">Un listener traite un Token non-authentifié</p>
+                </section>
+                
+                <section>
+                    <h2 class="center">Token</h2>
+                    <p>Contient les informations relatives à l'authentication et l'autorisation : Utilisateur, Droits, ...</p>
+                    <p class="fragment">Un Token possède 2 états</p>
+                    <ul>
+                        <li class="fragment">Utilisateur non-authentifié</li>
+                        <li class="fragment">Utilisateur authentifié</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h2 class="center">Listener</h2>
+                    <p>Autre rôles : </p>
+                    <ul>
+                        <li class="fragment">Appel AuthenticationManger pour authentifier le token</li>
+                        <li class="fragment">Peut définir une réponse pour sortir le firewall</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h2 class="center">Listeners</h2>
+                    <p class="center"><img style="height: 600px" class="simple" src="images/firewall-listeners.png" /></p>
+                </section>
+                
+                <section>
+                    <h2 class="center">ChannelListener</h2>
+                    <ul>
+                        <li>Rédirige vers HTTPS si la requète doit être sécurisé est que l'on est en HTTP</li>
+                        <li>Rédirige vers HTTP si la requète ne doit pas être sécurisé est que l'on est en HTTPS</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h2 class="center">ContextListener</h2>
+                    <div class="spacer"></div>
+                    <ul>
+                        <li>Persistance du Token dans la Session</li>
+                        <li>Hydrate l'utilisateur du Token avec des UserProviders</li>
+                    </ul>
+                    <div class="spacer"></div>
+                    <p class="center"><img class="simple" src="images/firewall-listener-context.png" /></p>
+                </section>
+                
+                <section>
+                    <h2 class="center">UserProvider</h2>
+                    <div class="spacer"></div>
+                    <p class="center">Provenance des utilisateurs</p>
+                    <p class="center"><img style="height: 500px" class="simple" src="images/firewall-user-provider.png" /></p>
+                </section>
+                
+                <section class="center">
+                    <h2 class="center">UserProvider</h2>
+                    <pre ><code style="max-height: 700px" contenteditable># -*- mode: php -*-
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
+class UserProvider implements UserProviderInterface
+{
+    public function loadUserByUsername($username)
+    {
+    }
+
+    public function refreshUser(UserInterface $user)
+    {
+    }
+
+    public function supportsClass($class)
+    {
+    }
+}
+</code></pre>
+                </section>
+                
+                <section>
+                    <h2 class="center">LogoutListener</h2>
+                    <div class="spacer"></div>
+                    <p class="center">Déconnecte l'utilisateur</p>
+                    <p class="center"><img class="simple" src="images/firewall-listener-logout.png" /></p>
+                </section>
+                
+                <section>
+                    <h2 class="center">AuthenticationListeners</h2>
+                    <div class="spacer"></div>
+                    <p class="center">Authentifies les utilisateurs</p>
+                    <p class="center"><img class="simple" src="images/firewall-listeners-factory.png" /></p>
+                </section>
+                
+                <section>
+                    <h2 class="center">AuthenticationProviderManager</h2>
+                    <div class="spacer"></div>
+                    <p class="center">Appel des AuthenticationProvider avec un Token</p>
+                    <p class="center"><img style="height: 400px" class="simple" src="images/firewall-auth-providers.png" /></p>
+                </section>
+                
+                <section>
+                    <h2 class="center">AuthenticationProvider</h2>
+                    <div class="spacer"></div>
+                    <p class="center">Créer un token "authentifié" avec un token "non-authentifié"</p>
+                    
+                    <div class="spacer"></div>
+                    <p class="center">Exemple : DaoAuthenticationProvider</p>
+                    <p class="center"><img style="height: 500px" class="simple" src="images/firewall-dao-auth-provider.png" /></p>
+                </section>
+                
+                <section>
+                    <h2 class="center">AnonymousListener</h2>
+                    <p class="center">Créer un Token non authentifié</p>
+                </section>
+                
+                <section>
+                    <h2 class="center">AccessListener</h2>
+                    <p class="center">Vérifie les droits de l'utilisateur avec le requète</p>
+                </section>
+                
+                <section>
+                    <h2 class="center">SwitchUserListener</h2>
+                    <p class="center">Permet de se connecter à la place d'un autre utilisateur</p>
+                </section>
+                
+                <section>
+                    <h1 class="center">Créer son système d'authentificaiton</h1>
+                </section>
+                
+                <section>
+                    <h2 class="center">Factory</h2>
+                    <p>Il existes 2 types de Factory :</p>
+                    <ul>
+                        <li class="fragment">UserProviderFactory : Permet la création d'UserProvider</li>
+                        <li class="fragment">SecurityFactory : Permet la création de AuthenticationListener, AuthenticationProvider et EntryPoint</li>
+                    </ul>
+                </section>
+                
+                <section class="center">
+                    <h2 class="center">UserProviderFactory</h2>
+                    <pre ><code style="max-height: 700px" contenteditable># -*- mode: php -*-
+class MyUserFactory implements UserProviderFactoryInterface
+{
+    public function getKey()
+    {
+        //La clé de notre configuration dans un provider
+        "my_configuration_key";
+    }
+
+    public function addConfiguration(NodeDefinition $builder)
+    {
+        //Ici on définit l'architecture de notre configuration (comme un bundle)
+    }
+    
+    public function create(ContainerBuilder $container, $id, $config)
+    {
+        //Ici on créer notre service selon la configuration
+    }
+}
+</code></pre>
+                </section>
+                
+                <section class="center">
+                    <h2 class="center">Security</h2>
+                    <pre ><code style="max-height: 700px" contenteditable># -*- mode: php -*-
+class MySecurityFactory implements SecurityFactoryInterface
+{
+    public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
+    {
+        //Fonction qui doit renvoyer nos 3 services
+        return array($myAuthenticationProviderId, $myAuthenticationListenerId, $myEntryPointId);
+    }
+
+    public function getPosition()
+    {
+        //Position d'appel de notre authentification listener et user provider (pre_auth, form, http et remember_me)
+        return "form";
+    }
+
+    public function getKey()
+    {
+        return "my_config_key";
+    }
+
+    public function addConfiguration(NodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->scalarNode('my_parameter')->cannotBeEmpty()->end()
+            ->end()
+        ;
+    }
+}
+</code></pre>
+                </section>
+                
+                <section>
+                    <h2 class="center">Enregistrer une Factory</h2>
+                    <pre ><code style="max-height: 700px" contenteditable># -*- mode: php -*-
+class MyBundle extends Bundle
+{
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $extension = $container->getExtension('security');
+        $extension->addUserProviderFactory(new MyUserFactory());
+        $extension->addSecurityListenerFactory(new MySecurityFactory());
+    }
+}
+</code></pre>
+                </section>
+                
+                <section>
+                    <h1 class="center">Merci !</h1>
+                    <h2 class="center">Questions ?</h2>
+                    <div class="spacer"></div>
+                    <p class="center"><img src="images/twitter.png" class="simple inline" />@joelwurtz</p>
+                    <p class="center"><img src="images/twitter.png" class="simple inline" />@jolicode</p>
+                    <p class="center">Slides sur http://</p>
+                </section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
